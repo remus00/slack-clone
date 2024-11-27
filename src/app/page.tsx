@@ -1,9 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { AuthScreen } from '@/features/auth/components/AuthScreen';
 
 export default function Home() {
-    return (
-        <div className="flex h-screen w-full items-center justify-center">
-            <Button>Hello world</Button>
-        </div>
-    );
+    return <AuthScreen />;
 }
