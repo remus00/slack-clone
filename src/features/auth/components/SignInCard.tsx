@@ -24,9 +24,11 @@ export const SignInCard = ({ setState }: Props) => {
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [pending, setPending] = useState<boolean>(false);
 
     const handleProviderSignIn = (value: 'github' | 'google') => {
-        void signIn(value);
+        setPending(true);
+        void signIn(value).finally(() => setPending(false));
     };
 
     return (
@@ -40,7 +42,7 @@ export const SignInCard = ({ setState }: Props) => {
             <CardContent className="space-y-5 px-0 pb-0">
                 <form className="space-y-2.5" action="">
                     <Input
-                        disabled={false}
+                        disabled={pending}
                         value={email}
                         onChange={(e) => {
                             setEmail(e.target.value);
@@ -50,7 +52,7 @@ export const SignInCard = ({ setState }: Props) => {
                         required
                     />
                     <Input
-                        disabled={false}
+                        disabled={pending}
                         value={password}
                         onChange={(e) => {
                             setPassword(e.target.value);
@@ -59,7 +61,7 @@ export const SignInCard = ({ setState }: Props) => {
                         type="password"
                         required
                     />
-                    <Button type="submit" className="w-full" size="lg" disabled={false}>
+                    <Button type="submit" className="w-full" size="lg" disabled={pending}>
                         Continue
                     </Button>
                 </form>
@@ -67,17 +69,17 @@ export const SignInCard = ({ setState }: Props) => {
                 <Separator />
                 <div className="flex flex-col gap-y-2.5">
                     <Button
-                        disabled={false}
+                        disabled={pending}
                         size="lg"
                         className="relative w-full"
                         variant="outline"
-                        onClick={() => {}}
+                        onClick={() => handleProviderSignIn('google')}
                     >
                         <FcGoogle className="absolute left-2.5 top-1/2 !size-5 -translate-y-1/2" />
                         Continue with Google
                     </Button>
                     <Button
-                        disabled={false}
+                        disabled={pending}
                         size="lg"
                         className="relative w-full"
                         variant="outline"
