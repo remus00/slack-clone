@@ -5,7 +5,7 @@ import { mutation, query } from './_generated/server';
 const generateCode = () => {
     const code = Array.from(
         { length: 6 },
-        () => '0123456789abcdefghijklmnopqrstuvz'[Math.floor(Math.random() * 36)]
+        () => '0123456789abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 36)]
     ).join('');
 
     return code;
