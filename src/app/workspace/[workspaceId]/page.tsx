@@ -1,11 +1,14 @@
-interface Props {
-    params: {
-        workspaceId: string;
-    };
-}
+'use client';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
-const SingleWorkspacePage = ({ params }: Props) => {
-    return <div>Id: {params.workspaceId}</div>;
+const SingleWorkspacePage = () => {
+    const workspaceId = useWorkspaceId();
+
+    return (
+        <div className="flex flex-col gap-5">
+            <p>Id: {workspaceId}</p>
+        </div>
+    );
 };
 
 export default SingleWorkspacePage;
