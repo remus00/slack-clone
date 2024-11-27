@@ -21,7 +21,6 @@ export const create = mutation({
             throw new Error('Unauthorized');
         }
 
-        /* TODO: dynamic */
         const joinCode = generateCode();
 
         const workspaceId = await ctx.db.insert('workspaces', {
@@ -34,6 +33,11 @@ export const create = mutation({
             userId,
             workspaceId,
             role: 'admin',
+        });
+
+        await ctx.db.insert('channels', {
+            name: 'General',
+            workspaceId,
         });
 
         return workspaceId;
