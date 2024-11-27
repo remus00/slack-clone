@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { useAuthActions } from '@convex-dev/auth/react';
+import { TriangleAlert } from 'lucide-react';
 import { SetStateAction, useState } from 'react';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -19,9 +21,32 @@ interface Props {
 }
 
 export const SignUpCard = ({ setState }: Props) => {
+    const { signIn } = useAuthActions();
+
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [error, setError] = useState<string>('');
+    const [pending, setPending] = useState<boolean>(false);
+
+    const handlePasswordSignUp = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+        setPending(true);
+        signIn('password', { email, password, flow: 'signUp' })
+            .catch(() => {
+                setError('Something went wrong');
+            })
+            .finally(() => setPending(false));
+    };
+
+    const handleProviderSignUp = (value: 'github' | 'google') => {
+        setPending(true);
+        void signIn(value).finally(() => setPending(false));
+    };
 
     return (
         <Card className="h-full w-full p-8">
@@ -31,10 +56,16 @@ export const SignUpCard = ({ setState }: Props) => {
                     Use your email or another service to continue
                 </CardDescription>
             </CardHeader>
+            {!!error && (
+                <div className="mb-6 flex items-center gap-x-2 rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+                    <TriangleAlert className="size-4" />
+                    <p>{error}</p>
+                </div>
+            )}
             <CardContent className="space-y-5 px-0 pb-0">
-                <form className="space-y-2.5" action="">
+                <form className="space-y-2.5" onSubmit={handlePasswordSignUp}>
                     <Input
-                        disabled={false}
+                        disabled={pending}
                         value={email}
                         onChange={(e) => {
                             setEmail(e.target.value);
@@ -44,7 +75,7 @@ export const SignUpCard = ({ setState }: Props) => {
                         required
                     />
                     <Input
-                        disabled={false}
+                        disabled={pending}
                         value={password}
                         onChange={(e) => {
                             setPassword(e.target.value);
@@ -54,7 +85,7 @@ export const SignUpCard = ({ setState }: Props) => {
                         required
                     />
                     <Input
-                        disabled={false}
+                        disabled={pending}
                         value={confirmPassword}
                         onChange={(e) => {
                             setConfirmPassword(e.target.value);
@@ -63,7 +94,7 @@ export const SignUpCard = ({ setState }: Props) => {
                         type="password"
                         required
                     />
-                    <Button type="submit" className="w-full" size="lg" disabled={false}>
+                    <Button type="submit" className="w-full" size="lg" disabled={pending}>
                         Continue
                     </Button>
                 </form>
@@ -71,21 +102,21 @@ export const SignUpCard = ({ setState }: Props) => {
                 <Separator />
                 <div className="flex flex-col gap-y-2.5">
                     <Button
-                        disabled={false}
+                        disabled={pending}
                         size="lg"
                         className="relative w-full"
                         variant="outline"
-                        onClick={() => {}}
+                        onClick={() => handleProviderSignUp('google')}
                     >
                         <FcGoogle className="absolute left-2.5 top-1/2 !size-5 -translate-y-1/2" />
                         Continue with Google
                     </Button>
                     <Button
-                        disabled={false}
+                        disabled={pending}
                         size="lg"
                         className="relative w-full"
                         variant="outline"
-                        onClick={() => {}}
+                        onClick={() => handleProviderSignUp('github')}
                     >
                         <FaGithub className="absolute left-2.5 top-1/2 !size-5 -translate-y-1/2" />
                         Continue with Github
