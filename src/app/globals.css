@@ -73,3 +73,13 @@ body,
         @apply bg-background text-foreground;
     }
 }
+
+@layer utilities {
+    .shad-otp {
+        @apply flex w-full justify-between gap-1 sm:gap-2 !important;
+    }
+
+    .shad-otp-slot {
+        @apply flex size-12 justify-center gap-5 rounded-lg border-2 text-[40px] font-medium md:size-16 !important;
+    }
+}
